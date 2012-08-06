@@ -140,8 +140,12 @@ class SolrSearchBackend(BaseSearchBackend):
                             narrow_queries=None, spelling_query=None,
                             within=None, dwithin=None, distance_point=None,
                             models=None, limit_to_registered_models=None,
-                            result_class=None):
+                            result_class=None, dismax=None):
         kwargs = {'fl': '* score'}
+        
+        if dismax:
+            kwargs['qf'] = dismax
+            kwargs['defType'] = 'edismax'
 
         if fields:
             if isinstance(fields, (list, set)):
@@ -493,6 +497,9 @@ class SolrSearchQuery(BaseSearchQuery):
     def matching_all_fragment(self):
         return '*:*'
 
+    def add_dismax(self, string):
+        self.dismax = string
+    
     def add_spatial(self, lat, lon, sfield, distance, filter='bbox'):
         """Adds spatial query parameters to search query"""
         kwargs = {
@@ -661,6 +668,9 @@ class SolrSearchQuery(BaseSearchQuery):
 
         if self.within:
             search_kwargs['within'] = self.within
+            
+        if self.dismax:
+            search_kwargs['dismax'] = self.dismax
 
         if spelling_query:
             search_kwargs['spelling_query'] = spelling_query

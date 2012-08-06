@@ -300,6 +300,7 @@ class BaseSearchQuery(object):
         #: and django_id when using code which expects those to be included in
         #: the results
         self.fields = []
+        self.dismax = ''
         # Geospatial-related information
         self.within = {}
         self.dwithin = {}
@@ -621,6 +622,9 @@ class BaseSearchQuery(object):
 
         if subtree:
             self.query_filter.end_subtree()
+        
+    def add_dismax(self, string):
+        raise NotImplementedError("Dismax queries are only supported by Solr")
 
     def add_order_by(self, field):
         """Orders the search result by a field."""
@@ -835,6 +839,7 @@ class BaseSearchQuery(object):
         clone.within = self.within.copy()
         clone.dwithin = self.dwithin.copy()
         clone.distance_point = self.distance_point.copy()
+        clone.dismax = self.dismax
         clone._raw_query = self._raw_query
         clone._raw_query_params = self._raw_query_params
         return clone

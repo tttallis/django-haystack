@@ -529,6 +529,11 @@ class SearchQuerySet(object):
         qs._fields.extend(fields)
         qs._flat = flat
         return qs
+        
+    def dismax(self, string):
+        clone = self._clone()
+        clone.query.add_dismax(string)
+        return clone
 
     # Utility methods.
 
