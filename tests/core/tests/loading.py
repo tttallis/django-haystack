@@ -5,6 +5,20 @@ from haystack import indexes
 from haystack.utils import loading
 from core.models import MockModel, AnotherMockModel
 
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+    assert hasattr(unittest, 'skipIf'), (
+        'Your version of unittest does not support "skipIf". '
+        'You can install unittest2 or upgrade Python to 2.7'
+    )
+
+try:
+    import pysolr
+except ImportError:
+    pysolr = False
+
 
 class ConnectionHandlerTestCase(TestCase):
     def test_init(self):
